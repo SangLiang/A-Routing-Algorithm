@@ -10,8 +10,8 @@ var Map = [
 	[ 0 , 0 , 0 , 0 , 0 ],
 	[ 0 , 0 , 1 , 0 , 0 ],
 	[ 2 , 0 , 1 , 0 , 3 ],
-	[ 0 , 0 , 0 , 0 , 0 ],
-	[ 0 , 0 , 0 , 0 , 0 ],
+	[ 0 , 0 , 1 , 0 , 0 ],
+	[ 0 , 0 , 1 , 0 , 0 ],
 ];
 
 // 要走的路径
@@ -30,12 +30,16 @@ var current_position = [2,0];
 // 周围所有的可用节点数组
 var aroundNodeList = [];
 
+// 被禁止的节点（走过的节点）
+var BanNodeList  = [];
+
+// 游戏主定时器
+var Timer = null;
+
 // 打印整张地图
 function PrintMap(){
 	for(var i = 0; i <Map.length;i++){
 		console.info(Map[i]);
-		for(var j = 0; j<Map.length;j++){
-		}
 	}
 }
 
@@ -50,7 +54,11 @@ function CheckNodes(checkPosition){
 	if(_i>0){
 		var Node = [_i-1,_j];
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	}
 
@@ -59,7 +67,11 @@ function CheckNodes(checkPosition){
 		var Node = [_i+1,_j];
 
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	}
 
@@ -67,7 +79,11 @@ function CheckNodes(checkPosition){
 	if(_j>0){
 		var Node = [_i,_j-1];
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	}
 
@@ -75,7 +91,11 @@ function CheckNodes(checkPosition){
 	if(_j<Map.length - 1){
 		var Node = [_i,_j+1];
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	}
 
@@ -83,7 +103,12 @@ function CheckNodes(checkPosition){
 	if(_i>0 && _j>0){
 		var Node = [_i-1,_j-1];
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					console.log(BanNodeList);
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	} 
 
@@ -91,7 +116,11 @@ function CheckNodes(checkPosition){
 	if(_i>0 && _j<Map.length - 1){
 		var Node = [_i-1,_j+1];
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	}
 
@@ -99,7 +128,11 @@ function CheckNodes(checkPosition){
 	if(_i<Map.length-1&& _j>0){
 		var Node = [_i+1,_j-1];
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	}
 
@@ -107,7 +140,11 @@ function CheckNodes(checkPosition){
 	if(_i<Map.length-1 && _j<Map.length -1){
 		var Node = [_i+1,_j+1];
 		if(Map[Node[0]][Node[1]] != 1){
-			aroundNodeList.push(Node);
+			for(item in BanNodeList){
+				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
+					aroundNodeList.push(Node);
+				}
+			}
 		}
 	}
 
@@ -161,9 +198,11 @@ function FindLogic(){
 	// console.log(_templist);
 	return _templist;
 }
-var Timer = null;
+
 // 主循环
 function MainLoop(){
+	BanNodeList.push(current_position);
+	// console.log(current_position);
 	CheckNodes(current_position);
 	var _aroundNodes = FindLogic();
 	var min = _aroundNodes[0]["len"];

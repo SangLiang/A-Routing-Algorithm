@@ -206,14 +206,17 @@ function MainLoop(){
 	CheckNodes(current_position);
 	var _aroundNodes = FindLogic();
 	var min = _aroundNodes[0]["len"];
+	// var min = 100000000;
 	var newPosition = {};
 
 	for(item in _aroundNodes){
 		if(_aroundNodes[item]["len"]<min){
-			min = _aroundNodes[item];
+			min = _aroundNodes[item]["len"];
+			console.log(min);
 			current_position =_aroundNodes[item]["pos"];
-		}else if(_aroundNodes[item]["len"] == min){
-			current_position =_aroundNodes[item]["pos"];
+			console.log(current_position);
+		}else{
+			// current_position =_aroundNodes[item]["pos"];
 		}
 	}
 

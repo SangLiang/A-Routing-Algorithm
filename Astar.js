@@ -7,11 +7,11 @@
  */
 
 var Map = [
-	[ 0 , 0 , 0 , 0 , 0 ],
+	[ 0 , 0 , 1 , 0 , 0 ],
 	[ 0 , 0 , 1 , 0 , 0 ],
 	[ 2 , 0 , 1 , 0 , 3 ],
 	[ 0 , 0 , 1 , 0 , 0 ],
-	[ 0 , 0 , 1 , 0 , 0 ],
+	[ 0 , 0 , 0 , 0 , 0 ],
 ];
 
 // 要走的路径
@@ -37,14 +37,14 @@ var BanNodeList  = [];
 var Timer = null;
 
 // 打印整张地图
-function PrintMap(){
+var PrintMap = function (){
 	for(var i = 0; i <Map.length;i++){
 		console.info(Map[i]);
 	}
 }
 
 // 找到周围的所有节点
-function CheckNodes(checkPosition){
+var CheckNodes = function (checkPosition){
 	var _i = checkPosition[0];
 	var _j = checkPosition[1];
 
@@ -54,24 +54,15 @@ function CheckNodes(checkPosition){
 	if(_i>0){
 		var Node = [_i-1,_j];
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	}
 
 	// 该节点下面
 	if(_i<Map.length - 1){
 		var Node = [_i+1,_j];
-
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	}
 
@@ -79,11 +70,7 @@ function CheckNodes(checkPosition){
 	if(_j>0){
 		var Node = [_i,_j-1];
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	}
 
@@ -91,11 +78,7 @@ function CheckNodes(checkPosition){
 	if(_j<Map.length - 1){
 		var Node = [_i,_j+1];
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	}
 
@@ -103,12 +86,7 @@ function CheckNodes(checkPosition){
 	if(_i>0 && _j>0){
 		var Node = [_i-1,_j-1];
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					console.log(BanNodeList);
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	} 
 
@@ -116,11 +94,7 @@ function CheckNodes(checkPosition){
 	if(_i>0 && _j<Map.length - 1){
 		var Node = [_i-1,_j+1];
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	}
 
@@ -128,11 +102,7 @@ function CheckNodes(checkPosition){
 	if(_i<Map.length-1&& _j>0){
 		var Node = [_i+1,_j-1];
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	}
 
@@ -140,18 +110,38 @@ function CheckNodes(checkPosition){
 	if(_i<Map.length-1 && _j<Map.length -1){
 		var Node = [_i+1,_j+1];
 		if(Map[Node[0]][Node[1]] != 1){
-			for(item in BanNodeList){
-				if(BanNodeList[item][0] != Node[0] && BanNodeList[item][1] !=Node[1]){
-					aroundNodeList.push(Node);
-				}
-			}
+			aroundNodeList.push(Node);
 		}
 	}
 
 	// console.log(aroundNodeList);
+	console.log("可供选择的位置是"+aroundNodeList);
+	console.log("被禁止的节点为"+BanNodeList);
 }
 
-function GetSumLength(checkPosition,ending_position,start_position){
+/*
+	检查点距离目标的位置
+ */
+var GetHLength = function (checkPosition,ending_position){
+	var _i = checkPosition[0];
+	var _j = checkPosition[1];
+	var result = 0;
+	result  =  (Math.abs(_i-ending_position[0]) + Math.abs(_j-ending_position[1]))*STRIGHT_STEP;
+	return result;
+} 
+
+/*
+	检查点距离起点的位置的位置
+ */
+var GetGLength = function (checkPosition,start_position){
+	var _i = checkPosition[0];
+	var _j = checkPosition[1];
+	var result = 0;
+	result  =  (Math.abs(_i - start_position[0]) + Math.abs(_j- start_position[1]))*STRIGHT_STEP;
+	return result;
+}
+
+var GetSumLength = function (checkPosition,ending_position,start_position){
 	var _length = 0;
 
 	var _hLength = GetHLength(checkPosition,ending_position,start_position);
@@ -163,31 +153,8 @@ function GetSumLength(checkPosition,ending_position,start_position){
 	return _length;
 }
 
-
-/*
-	检查点距离目标的位置
- */
-function GetHLength(checkPosition,ending_position){
-	var _i = checkPosition[0];
-	var _j = checkPosition[1];
-	var result = 0;
-	result  =  (Math.abs(_i-ending_position[0]) + Math.abs(_j-ending_position[1]))*STRIGHT_STEP;
-	return result;
-} 
-
-/*
-	检查点距离起点的位置的位置
- */
-function GetGLength(checkPosition,start_position){
-	var _i = checkPosition[0];
-	var _j = checkPosition[1];
-	var result = 0;
-	result  =  (Math.abs(_i - start_position[0]) + Math.abs(_j- start_position[1]))*STRIGHT_STEP;
-	return result;
-}
-
 // 计算所有节点的预计长度
-function FindLogic(){
+var FindLogic = function (){
 	var _templist = [];
 	for(var i = 0 ; i <aroundNodeList.length; i ++){
 		var _returnObj = {};
@@ -195,26 +162,24 @@ function FindLogic(){
 		_returnObj["pos"] = aroundNodeList[i];
 		_templist.push(_returnObj);
 	}
-	// console.log(_templist);
 	return _templist;
 }
 
 // 主循环
-function MainLoop(){
+var MainLoop = function (){
+	console.log("当前的位置是"+current_position);
 	BanNodeList.push(current_position);
-	// console.log(current_position);
 	CheckNodes(current_position);
 	var _aroundNodes = FindLogic();
-	var min = _aroundNodes[0]["len"];
-	// var min = 100000000;
+	// var min = _aroundNodes[0]["len"];
+	var min = 100000000;
 	var newPosition = {};
 
 	for(item in _aroundNodes){
 		if(_aroundNodes[item]["len"]<min){
 			min = _aroundNodes[item]["len"];
-			console.log(min);
 			current_position =_aroundNodes[item]["pos"];
-			console.log(current_position);
+			// console.log(current_position);
 		}else{
 			// current_position =_aroundNodes[item]["pos"];
 		}
@@ -232,11 +197,12 @@ function MainLoop(){
 
 
 // 启动函数
-(function Start(){
+var Start  = function(){
 	PrintMap();
 	
 	Timer = setInterval(MainLoop,1000);
 	// console.log("-------------------");
 	// console.log(aroundNodeList);
 	// console.log("-------------------");
-})();
+}
+Start();
